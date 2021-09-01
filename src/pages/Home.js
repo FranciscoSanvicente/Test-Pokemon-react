@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconButton, Paper, InputBase, } from "@material-ui/core";
+import { IconButton, Paper, InputBase } from "@material-ui/core";
 import { Search as SearchIcon } from "@material-ui/icons";
 import ReactPaginate from "react-paginate";
 import CardPokemon from "../components/CardPokemon";
@@ -10,22 +10,26 @@ import data from "../data/data.json";
 
 const Home = () => {
   const classes = useStyles();
-
   const [pageNumber, setPageNumber] = useState(0);
   const pokemonPage = 14;
   const pagesVisited = pageNumber * pokemonPage;
   const [typePokemon, setTypePokemon] = useState("");
-
-  const handleChange = (event) => {
-    setTypePokemon(event.target.value);
-  };
-
-  const { values, handleInputChange } = useForm({ search: "" });
+  const { values, reset, setValues } = useForm({ search: "" });
   const pageCount = Math.ceil(data.pokemon.length / pokemonPage);
   const handlePageClick = ({ selected: selectedPage }) => {
     setPageNumber(selectedPage);
   };
-
+  const handleChange = (event) => {
+    setTypePokemon(event.target.value);
+    reset();
+  };
+  const handleInputChange = ({ target }) => {
+    setValues({
+      ...values,
+      [target.name]: target.value,
+    });
+    setTypePokemon("");
+  };
   return (
     <>
       <div className="animate__animated animate__fadeInUpBig app-contaner">
@@ -43,7 +47,7 @@ const Home = () => {
             <SearchIcon />
           </IconButton>
         </Paper>
-        <Select typePokemon={typePokemon} handleChange={handleChange}/>
+        <Select typePokemon={typePokemon} handleChange={handleChange} />
         <div className=" pokemon-container">
           <div className="all-container">
             {values.search === "" &&
